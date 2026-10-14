@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum JobStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  FAILED
+  DELAYED
+  CANCELLED
+}
+
+enum JobType {
+  EMAIL_SIMULATION
+  PDF_GENERATION
+  CPU_LIGHT_PROCESSING
+  FAILURE_SIMULATION
+}
+
+enum AttemptStatus {
+  RUNNING
+  SUCCESS
+  FAILED
+}
+
+enum AuditAction {
+  ENQUEUED
+  ATTEMPT_STARTED
+  ATTEMPT_SUCCEEDED
+  ATTEMPT_FAILED
+  RETRIED
+  CANCELLED
+  MOVED_TO_DLQ
+  REPLAYED
+  STATUS_CHANGED
+}
+
+enum ActorType {
+  SYSTEM
+  WORKER
+  API_USER
+  ADMIN
+}
+
+model Job {
+  id              String             @id @default(uuid())
+  bullMqJobId     String?            @unique
+  type            JobType
+  queueName       String             @default("default-jobs")
+  payload         Json
+  priority        Int                @default(0)
+  status          JobStatus          @default(PENDING)
+  maxAttempts     Int                @default(3)
+  attemptCount    Int                @default(0)
+  backoffType     String             @default("exponential")
+  backoffDelayMs  Int                @default(1000)
+  timeoutMs       Int                @default(30000)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+  startedAt       DateTime?
+  completedAt     DateTime?
+  failedAt        DateTime?
+
+  idempotencyRecord IdempotencyRecord?
+  attempts          JobAttempt[]
+  result            JobResult?
+  deadLetterRecord  DeadLetterRecord?
+  auditLogs         JobAuditLog[]
+
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+  @@index([queueName, status])
+}
+
+model IdempotencyRecord {
+  key            String    @id
+  jobId          String?   @unique
+  requestHash    String
+  responseStatus Int
+  responseBody   Json
+  createdAt      DateTime  @default(now())
+  expiresAt      DateTime
+
+  job            Job?      @relation(fields: [jobId], references: [id], onDelete: SetNull)
+
+  @@index([expiresAt])
+}
+
+model JobAttempt {
+  id            String        @id @default(uuid())
+  jobId         String
+  attemptNumber Int
+  status        AttemptStatus
+  workerId      String?
+  errorName     String?
+  errorMessage  String?
+  errorStack    String?
+  isRetryable   Boolean       @default(true)
+  durationMs    Int?
+  startedAt     DateTime      @default(now())
+  finishedAt    DateTime?
+
+  job           Job           @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId, attemptNumber])
+  @@index([status])
+}
+
+model JobResult {
+  id                  String   @id @default(uuid())
+  jobId               String   @unique
+  data                Json
+  executionDurationMs Int
+  createdAt           DateTime @default(now())
+
+  job                 Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+}
+
+model DeadLetterRecord {
+  id              String    @id @default(uuid())
+  jobId           String    @unique
+  originalPayload Json
+  errorReason     String
+  errorDetails    Json?
+  failureCount    Int
+  firstFailedAt   DateTime  @default(now())
+  lastFailedAt    DateTime  @default(now())
+  replayCount     Int       @default(0)
+  lastReplayedAt  DateTime?
+  isResolved      Boolean   @default(false)
+  resolvedAt      DateTime?
+  resolvedBy      String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  job             Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([isResolved])
+  @@index([lastFailedAt])
+}
+
+model JobAuditLog {
+  id        String      @id @default(uuid())
+  jobId     String
+  action    AuditAction
+  actor     ActorType   @default(SYSTEM)
+  actorId   String?
+  details   Json?
+  timestamp DateTime    @default(now())
+
+  job       Job         @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+  @@index([timestamp])
+  @@index([action])
+}
+
+model SideEffectLog {
+  id          String   @id @default(uuid())
+  dedupKey    String   @unique
+  jobId       String
+  effectType  String
+  recipient   String?
+  status      String   @default("COMPLETED")
+  executedAt  DateTime @default(now())
+
+  @@index([jobId])
+  @@index([dedupKey])
+}

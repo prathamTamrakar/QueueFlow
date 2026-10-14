@@ -1,0 +1,38 @@
+groups:
+  - name: queueflow_alerts
+    rules:
+      - alert: HighQueueBacklog
+        expr: queueflow_queue_depth{state="waiting"} > 500
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Queue backlog growing rapidly"
+          description: "Waiting jobs in {{ $labels.queue }} exceeded 500 for over 2 minutes."
+
+      - alert: ElevatedJobFailureRate
+        expr: rate(queueflow_jobs_failed_total[5m]) > 0.1
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Elevated job failure rate detected"
+          description: "Failure rate for job type {{ $labels.job_type }} is greater than 10% in the last 5 minutes."
+
+      - alert: DeadLetterQueueSpike
+        expr: rate(queueflow_dead_letter_jobs_total[5m]) > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Jobs entering Dead-Letter Queue"
+          description: "New unresolvable jobs entering DLQ in {{ $labels.queue }}."
+
+      - alert: NoActiveWorkers
+        expr: queueflow_worker_active_count == 0
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Worker pool idle or offline"
+          description: "No active workers detected for queueflow."

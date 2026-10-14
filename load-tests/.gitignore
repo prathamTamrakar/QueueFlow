@@ -1,0 +1,5 @@
+# Test outputs and reports
+*.log
+test-results/
+summary.json
+report.html

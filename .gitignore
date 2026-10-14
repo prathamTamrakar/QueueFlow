@@ -1,0 +1,83 @@
+# ==========================================
+# Dependencies
+# ==========================================
+node_modules/
+*/node_modules/
+.pnp
+.pnp.js
+
+# ==========================================
+# Production Build Outputs
+# ==========================================
+dist/
+*/dist/
+build/
+out/
+*.tsbuildinfo
+
+# ==========================================
+# Environment Variables & Credentials
+# ==========================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+!.env.example
+
+# ==========================================
+# Database & Local Storage Volumes
+# ==========================================
+postgres_data/
+redis_data/
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+
+# ==========================================
+# Logs & Diagnostic Files
+# ==========================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==========================================
+# Testing & Code Coverage
+# ==========================================
+coverage/
+*/coverage/
+.nyc_output/
+*.lcov
+test-results/
+
+# ==========================================
+# Operating System & IDE Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ==========================================
+# Local Docker Overrides
+# ==========================================
+docker-compose.override.yml

@@ -1,0 +1,144 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 6, "w": 6, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "Waiting Queue Depth",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "queueflow_queue_depth{state=\"waiting\"}",
+          "legendFormat": "Waiting Jobs",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": { "calcs": ["lastNotNull"], "values": false }
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 6, "w": 6, "x": 6, "y": 0 },
+      "id": 2,
+      "title": "Active Jobs",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "queueflow_queue_depth{state=\"active\"}",
+          "legendFormat": "Active Jobs",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": { "calcs": ["lastNotNull"], "values": false }
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 6, "w": 6, "x": 12, "y": 0 },
+      "id": 3,
+      "title": "Completed Jobs",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "sum(queueflow_jobs_completed_total)",
+          "legendFormat": "Completed Total",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": { "calcs": ["lastNotNull"], "values": false }
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 6, "w": 6, "x": 18, "y": 0 },
+      "id": 4,
+      "title": "DLQ Jobs",
+      "type": "stat",
+      "targets": [
+        {
+          "expr": "sum(queueflow_dead_letter_jobs_total)",
+          "legendFormat": "Dead Letter Total",
+          "refId": "A"
+        }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "reduceOptions": { "calcs": ["lastNotNull"], "values": false }
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 9, "w": 12, "x": 0, "y": 6 },
+      "id": 5,
+      "title": "Job Throughput (Ops/sec)",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "sum(rate(queueflow_jobs_enqueued_total[1m]))",
+          "legendFormat": "Enqueued rate",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(queueflow_jobs_completed_total[1m]))",
+          "legendFormat": "Completed rate",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(rate(queueflow_jobs_failed_total[1m]))",
+          "legendFormat": "Failed rate",
+          "refId": "C"
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 9, "w": 12, "x": 12, "y": 6 },
+      "id": 6,
+      "title": "Processing Duration Percentiles",
+      "type": "timeseries",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(queueflow_job_processing_duration_seconds_bucket[2m])) by (le))",
+          "legendFormat": "p50 Latency",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(queueflow_job_processing_duration_seconds_bucket[2m])) by (le))",
+          "legendFormat": "p95 Latency",
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(queueflow_job_processing_duration_seconds_bucket[2m])) by (le))",
+          "legendFormat": "p99 Latency",
+          "refId": "C"
+        }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["queueflow", "distributed-jobs", "redis", "bullmq"],
+  "time": { "from": "now-15m", "to": "now" },
+  "timezone": "browser",
+  "title": "QueueFlow Distributed System Overview",
+  "uid": "queueflow-main-dash",
+  "version": 1
+}
