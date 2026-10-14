@@ -310,10 +310,4 @@ See [BENCHMARK_REPORT_TEMPLATE.md](file:///c:/Users/prath/OneDrive/Desktop/Job%2
 - **Redis Memory Limits:** Redis should be configured with an appropriate `maxmemory` eviction policy (e.g., `noeviction` for BullMQ queues to prevent accidental job dropping).
 - **Admin Authentication:** The administrative replay and DLQ endpoints require an API Key. For multi-tenant production deployments, integrate with OAuth2/OIDC (e.g. Auth0, Keycloak) or JWT-based RBAC.
 - **Payload Sanitization:** Although Zod strictly validates input types, payloads containing unconstrained blobs should be bounded by Express body-parser size limits (currently set to 10MB).
-
----
-
-## 12. Resume Bullet Template
-
-> Engineered **QueueFlow**, a high-throughput distributed background job processing system in **Node.js/TypeScript**, **BullMQ**, and **PostgreSQL**, sustaining **`[750+]` enqueue req/sec** at **`[<15ms]` p95 latency**; architected deterministic SHA-256 idempotency locking and side-effect deduplication eliminating **100%** of duplicate side-effects during retries, paired with an automated Dead-Letter Queue (DLQ) replay engine, Prometheus observability, and a React real-time telemetry dashboard.
 #
