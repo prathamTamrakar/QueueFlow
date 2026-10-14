@@ -3,7 +3,7 @@ import { JobWorker } from './workers/worker';
 import { logger } from './logger';
 
 async function main() {
-  logger.info('🚀 Starting QueueFlow unified system (API + Worker dual mode)...');
+  logger.info('Starting QueueFlow unified system (API + Worker dual mode)...');
 
   // 1. Start API Server
   startServer();
