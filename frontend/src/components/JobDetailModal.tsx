@@ -4,11 +4,8 @@ import {
   X,
   Clock,
   CheckCircle2,
-  AlertTriangle,
-  Layers,
   Terminal,
   RotateCw,
-  Cpu,
 } from 'lucide-react';
 
 interface JobDetailModalProps {
@@ -25,65 +22,71 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({
   if (!job) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="glass-panel w-full max-w-3xl rounded-2xl border border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-in fade-in duration-150">
+      <div className="w-full max-w-3xl rounded-md bg-[#11141c] border border-slate-800 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
-          <div className="flex items-center space-x-3">
-            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-              <Layers className="w-5 h-5" />
-            </div>
+        <div className="px-5 py-3.5 border-b border-slate-800 flex items-center justify-between bg-[#0e1118]">
+          <div className="flex items-center space-x-3 min-w-0">
             <div>
               <div className="flex items-center space-x-2">
-                <h3 className="font-bold text-white text-base">Job Inspection</h3>
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                <span className="font-semibold text-white text-sm">Job Inspection</span>
+                <span
+                  className={`px-1.5 py-0.2 rounded text-[10px] font-mono font-medium border ${
+                    job.status === 'COMPLETED'
+                      ? 'bg-emerald-950/40 text-emerald-300 border-emerald-800/60'
+                      : job.status === 'FAILED'
+                      ? 'bg-rose-950/40 text-rose-300 border-rose-800/60'
+                      : 'bg-slate-800 text-slate-300 border-slate-700'
+                  }`}
+                >
                   {job.status}
                 </span>
               </div>
-              <p className="text-xs font-mono text-slate-400 mt-0.5">{job.id}</p>
+              <p className="text-[11px] font-mono text-slate-400 mt-0.5 truncate">{job.id}</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition"
+            title="Close inspector"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-6 text-xs text-slate-300">
+        <div className="p-5 overflow-y-auto space-y-4 text-xs text-slate-300">
           {/* Metadata Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
-              <span className="text-[10px] uppercase font-semibold text-slate-400">Queue</span>
-              <p className="font-mono text-slate-200 font-semibold mt-1">{job.queueName}</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            <div className="p-2.5 rounded bg-[#0a0d14] border border-slate-800/90">
+              <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">Queue</span>
+              <p className="font-mono text-slate-200 font-medium text-xs mt-0.5">{job.queueName}</p>
             </div>
-            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
-              <span className="text-[10px] uppercase font-semibold text-slate-400">Priority</span>
-              <p className="font-mono text-slate-200 font-semibold mt-1">{job.priority}</p>
+            <div className="p-2.5 rounded bg-[#0a0d14] border border-slate-800/90">
+              <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">Priority</span>
+              <p className="font-mono text-slate-200 font-medium text-xs mt-0.5 tabular-nums">{job.priority}</p>
             </div>
-            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
-              <span className="text-[10px] uppercase font-semibold text-slate-400">Attempts</span>
-              <p className="font-mono text-slate-200 font-semibold mt-1">
+            <div className="p-2.5 rounded bg-[#0a0d14] border border-slate-800/90">
+              <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">Attempts</span>
+              <p className="font-mono text-slate-200 font-medium text-xs mt-0.5 tabular-nums">
                 {job.attemptCount} / {job.maxAttempts}
               </p>
             </div>
-            <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800/80">
-              <span className="text-[10px] uppercase font-semibold text-slate-400">BullMQ ID</span>
-              <p className="font-mono text-slate-400 text-[10px] mt-1 truncate">
-                {job.bullMqJobId || 'Pending'}
+            <div className="p-2.5 rounded bg-[#0a0d14] border border-slate-800/90">
+              <span className="text-[10px] uppercase font-semibold text-slate-400 tracking-wider">BullMQ ID</span>
+              <p className="font-mono text-slate-400 text-[11px] mt-0.5 truncate">
+                {job.bullMqJobId || 'n/a'}
               </p>
             </div>
           </div>
 
           {/* Payload JSON */}
           <div>
-            <div className="flex items-center space-x-1.5 mb-2 font-semibold text-slate-200">
-              <Terminal className="w-4 h-4 text-indigo-400" />
+            <div className="flex items-center space-x-1.5 mb-1.5 font-medium text-slate-300 text-xs">
+              <Terminal className="w-3.5 h-3.5 text-brand-400" />
               <span>Job Payload</span>
             </div>
-            <pre className="p-4 rounded-xl bg-slate-950 border border-slate-800 font-mono text-[11px] text-slate-300 overflow-x-auto selection:bg-indigo-500/40">
+            <pre className="p-3 rounded bg-[#0a0d14] border border-slate-800 font-mono text-[11px] text-slate-200 overflow-x-auto">
               {JSON.stringify(job.payload, null, 2)}
             </pre>
           </div>
@@ -91,11 +94,11 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({
           {/* Execution Result */}
           {job.result && (
             <div>
-              <div className="flex items-center space-x-1.5 mb-2 font-semibold text-emerald-400">
-                <CheckCircle2 className="w-4 h-4" />
+              <div className="flex items-center space-x-1.5 mb-1.5 font-medium text-emerald-400 text-xs">
+                <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Execution Result ({job.result.executionDurationMs} ms)</span>
               </div>
-              <pre className="p-4 rounded-xl bg-emerald-950/20 border border-emerald-500/20 font-mono text-[11px] text-emerald-200 overflow-x-auto">
+              <pre className="p-3 rounded bg-emerald-950/20 border border-emerald-900/40 font-mono text-[11px] text-emerald-200 overflow-x-auto">
                 {JSON.stringify(job.result.data, null, 2)}
               </pre>
             </div>
@@ -103,14 +106,14 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({
 
           {/* Attempts History */}
           <div>
-            <div className="flex items-center space-x-1.5 mb-2 font-semibold text-slate-200">
-              <Clock className="w-4 h-4 text-purple-400" />
-              <span>Execution Attempt History</span>
+            <div className="flex items-center space-x-1.5 mb-1.5 font-medium text-slate-300 text-xs">
+              <Clock className="w-3.5 h-3.5 text-slate-400" />
+              <span>Execution Attempts ({job.attempts?.length ?? 0})</span>
             </div>
             {job.attempts && job.attempts.length > 0 ? (
-              <div className="border border-slate-800 rounded-xl overflow-hidden">
+              <div className="border border-slate-800 rounded overflow-hidden">
                 <table className="w-full text-left text-[11px]">
-                  <thead className="bg-slate-900 text-slate-400 uppercase tracking-wider font-semibold">
+                  <thead className="bg-[#0e1118] text-slate-400 uppercase tracking-wider text-[10px] font-semibold border-b border-slate-800">
                     <tr>
                       <th className="py-2 px-3">#</th>
                       <th className="py-2 px-3">Status</th>
@@ -119,31 +122,32 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({
                       <th className="py-2 px-3">Error Details</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/80">
+                  <tbody className="divide-y divide-slate-800/60 font-mono">
                     {job.attempts.map((att) => (
-                      <tr key={att.id} className="hover:bg-slate-900/40">
-                        <td className="py-2.5 px-3 font-mono font-bold text-slate-300">
+                      <tr key={att.id} className="hover:bg-slate-800/30">
+                        <td className="py-2 px-3 font-semibold text-slate-200 tabular-nums">
                           {att.attemptNumber}
                         </td>
-                        <td className="py-2.5 px-3">
+                        <td className="py-2 px-3">
                           <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${att.status === 'SUCCESS'
-                                ? 'bg-emerald-500/10 text-emerald-400'
+                            className={`px-1.5 py-0.2 rounded text-[10px] font-medium border ${
+                              att.status === 'SUCCESS'
+                                ? 'bg-emerald-950/40 text-emerald-300 border-emerald-800/60'
                                 : att.status === 'FAILED'
-                                  ? 'bg-rose-500/10 text-rose-400'
-                                  : 'bg-indigo-500/10 text-indigo-400'
-                              }`}
+                                ? 'bg-rose-950/40 text-rose-300 border-rose-800/60'
+                                : 'bg-brand-950/40 text-brand-300 border-brand-800/60'
+                            }`}
                           >
                             {att.status}
                           </span>
                         </td>
-                        <td className="py-2.5 px-3 font-mono text-slate-400">
+                        <td className="py-2 px-3 text-slate-400">
                           {att.workerId || 'pool-worker'}
                         </td>
-                        <td className="py-2.5 px-3 font-mono text-slate-300">
+                        <td className="py-2 px-3 text-slate-300 tabular-nums">
                           {att.durationMs ? `${att.durationMs}ms` : 'running...'}
                         </td>
-                        <td className="py-2.5 px-3 text-rose-300 font-mono text-[10px] max-w-xs truncate">
+                        <td className="py-2 px-3 text-rose-300 text-[10px] max-w-xs truncate">
                           {att.errorMessage || '—'}
                         </td>
                       </tr>
@@ -159,18 +163,18 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({
           {/* Audit Logs */}
           {job.auditLogs && job.auditLogs.length > 0 && (
             <div>
-              <div className="flex items-center space-x-1.5 mb-2 font-semibold text-slate-200">
-                <RotateCw className="w-4 h-4 text-indigo-400" />
+              <div className="flex items-center space-x-1.5 mb-1.5 font-medium text-slate-300 text-xs">
+                <RotateCw className="w-3.5 h-3.5 text-slate-400" />
                 <span>Audit Trail</span>
               </div>
-              <div className="space-y-2 border-l-2 border-slate-800 pl-4 ml-2">
+              <div className="space-y-2 border-l border-slate-800 pl-3 ml-1.5">
                 {job.auditLogs.map((log) => (
                   <div key={log.id} className="relative">
-                    <div className="absolute -left-[21px] top-1.5 w-2 h-2 rounded-full bg-indigo-500" />
+                    <div className="absolute -left-[17px] top-1.5 w-1.5 h-1.5 rounded-full bg-slate-500" />
                     <div className="flex items-center space-x-2">
                       <span className="font-semibold text-slate-200">{log.action}</span>
                       <span className="text-[10px] text-slate-500 font-mono">by {log.actor}</span>
-                      <span className="text-[10px] text-slate-400 font-mono">
+                      <span className="text-[10px] text-slate-400 font-mono tabular-nums">
                         {new Date(log.timestamp).toLocaleTimeString()}
                       </span>
                     </div>
@@ -187,7 +191,7 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-900/60 flex items-center justify-between">
+        <div className="px-5 py-3 border-t border-slate-800 bg-[#0e1118] flex items-center justify-between">
           <span className="text-[11px] text-slate-400 font-mono">
             Created: {new Date(job.createdAt).toLocaleString()}
           </span>
@@ -195,15 +199,15 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({
             {job.status === 'FAILED' && onReplayJob && (
               <button
                 onClick={() => onReplayJob(job.id)}
-                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs transition"
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-md bg-rose-700 hover:bg-rose-600 text-white font-medium text-xs transition"
               >
                 <RotateCw className="w-3.5 h-3.5" />
-                <span>Replay from DLQ</span>
+                <span>Replay Job</span>
               </button>
             )}
             <button
               onClick={onClose}
-              className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs transition"
+              className="px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-xs border border-slate-700 transition"
             >
               Close
             </button>
@@ -213,3 +217,4 @@ export const JobDetailModal: React.FC<JobDetailModalProps> = ({
     </div>
   );
 };
+

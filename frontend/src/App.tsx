@@ -199,7 +199,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 flex flex-col">
+    <div className="min-h-screen bg-surface-base flex flex-col font-sans">
       {/* Navigation Bar */}
       <Navbar
         activeTab={activeTab}
@@ -213,17 +213,18 @@ export const App: React.FC = () => {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 space-y-4">
         {/* Error Notification Banner */}
         {errorMessage && (
-          <div className="p-3.5 rounded-xl bg-rose-950/40 border border-rose-500/30 text-rose-300 text-xs flex items-center justify-between animate-in slide-in-from-top-2">
+          <div className="p-3 rounded-md bg-rose-950/50 border border-rose-800/60 text-rose-300 text-xs flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <AlertCircle className="w-4 h-4 text-rose-400" />
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
               <span>{errorMessage}</span>
             </div>
             <button
               onClick={() => setErrorMessage(null)}
-              className="text-slate-400 hover:text-white text-xs font-bold"
+              className="text-slate-400 hover:text-white text-xs font-mono ml-4"
+              title="Dismiss error"
             >
               ✕
             </button>
@@ -232,19 +233,24 @@ export const App: React.FC = () => {
 
         {/* Tab 1: Live Overview */}
         {activeTab === 'overview' && (
-          <div className="space-y-6">
+          <div className="space-y-4">
             <StatsOverview stats={stats} loading={statsLoading} />
             <QueueCharts stats={stats} />
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-white tracking-wide">
-                  Recent Queue Executions
-                </h3>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between pt-1">
+                <div className="flex items-center space-x-2">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                    Recent Queue Executions
+                  </h3>
+                  <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-1.5 py-0.2 rounded border border-slate-700/60">
+                    Top 8 records
+                  </span>
+                </div>
                 <button
                   onClick={() => setActiveTab('jobs')}
-                  className="text-xs text-indigo-400 hover:text-indigo-300 font-medium"
+                  className="text-xs text-brand-400 hover:text-brand-300 font-medium font-mono"
                 >
-                  View Full Job Explorer →
+                  View Job Explorer &rarr;
                 </button>
               </div>
               <JobsTable
@@ -269,12 +275,12 @@ export const App: React.FC = () => {
 
         {/* Tab 2: Job Explorer */}
         {activeTab === 'jobs' && (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-white">Job Explorer & Audit History</h2>
+                <h2 className="text-sm font-semibold text-white">Job Explorer & Execution History</h2>
                 <p className="text-xs text-slate-400">
-                  Search, inspect payloads, view attempt logs and cancel active tasks
+                  Search, inspect payload parameters, view attempt logs and cancel active tasks
                 </p>
               </div>
             </div>
@@ -310,9 +316,10 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950/60 py-4 px-6 text-center text-xs text-slate-400">
-        QueueFlow Distributed Job Processing System • Powered by BullMQ, Redis, PostgreSQL & Prisma
+      <footer className="border-t border-slate-800/80 bg-[#0e1118] py-3.5 px-6 text-center text-xs text-slate-400 font-mono">
+        QueueFlow Distributed Job Processing Engine &bull; BullMQ &bull; Redis &bull; PostgreSQL &bull; Prisma
       </footer>
+
 
       {/* Inspection Modal */}
       {selectedJobId && (
