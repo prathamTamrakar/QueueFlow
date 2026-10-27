@@ -73,7 +73,7 @@ export async function processJob(bullJob: BullJob): Promise<JobExecutionResult> 
     const timer = setTimeout(() => {
       reject(new JobTimeoutError(`Job exceeded timeout limit of ${timeoutMs}ms`));
     }, timeoutMs);
-    executionPromise.finally(() => clearTimeout(timer));
+    executionPromise.finally(() => clearTimeout(timer)).catch(() => {});
   });
 
   try {
